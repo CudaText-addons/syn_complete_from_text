@@ -1,11 +1,11 @@
 import re
 from sw import *
-                             
+
 # '-' means none-lexer
-option_lexers = '-,Ini files,Markdown,reStructuredText,Properties,' 
+option_lexers = '-,ini files,markdown,restructuredtext,properties,'
 option_min_len = 3
 option_case_sens = False
-prefix = 'text'
+prefix = 'w'
 
 
 def is_text_with_begin(s, begin):
@@ -48,9 +48,8 @@ class Command:
         x0, y0 = ed.get_caret_xy()
 
         lex = ed.get_prop(PROP_LEXER_CARET, '')
-        if lex is None: return
-        if lex=='': lex='-'
-        allow = ','+lex+',' in ','+option_lexers+','
+        if not lex: lex='-'
+        allow = ','+lex.lower()+',' in ','+option_lexers.lower()+','
         if not allow: return
 
         words = get_words_list()
@@ -61,7 +60,11 @@ class Command:
         if not word: return
         word1, word2 = word
 
-        words = [w+'|'+prefix for w in words if is_text_with_begin(w, word1) and w!=word1]
+        words = [w+'|'+prefix for w in words 
+                 if is_text_with_begin(w, word1) 
+                 and w!=word1 
+                 and w!=(word1+word2)
+                 ]
         #print('word:', word)
         #print('list:', words)
 
