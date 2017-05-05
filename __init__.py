@@ -6,7 +6,10 @@ option_lexers = '-,ini files,markdown,restructuredtext,properties,'
 option_min_len = 3
 option_case_sens = False
 prefix = 'w'
+  
 
+def isword(s):
+    return s.isalnum() or s=='_'
 
 def is_text_with_begin(s, begin):
     if option_case_sens:
@@ -29,12 +32,12 @@ def get_word(x, y):
     n = ed.xy_pos(x, y)
 
     n0 = n
-    while (n0>0) and (ed.get_text_substr(n0-1, 1).isalnum()):
+    while (n0>0) and isword(ed.get_text_substr(n0-1, 1)):
         n0 -= 1
     text1 = ed.get_text_substr(n0, n-n0)
 
     n0 = n
-    while (ed.get_text_substr(n0, 1).isalnum()):
+    while isword(ed.get_text_substr(n0, 1)):
         n0 += 1
     text2 = ed.get_text_substr(n, n0-n)
 
