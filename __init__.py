@@ -2,15 +2,25 @@ import re
 import os
 import os.path
 from sw import *
-# '-' means none-lexer
-option_lexers = '-,ini files,markdown,restructuredtext,properties'
-option_min_len = 3
-option_case_sens = False
-option_use_acp = True
-option_all_tabs = False
-prefix = 'w'
-#description = ' - from file'
-description = ''
+
+options = os.path.join(os.path.dirname(__file__), 'options.ini')
+
+def get_option(option, default):
+    sresult = ini_read(options, 'main', option, default)
+    if not sresult: sresult = default
+    return sresult
+
+def str_to_bool(sbool):
+    return sbool.lower() == 'true'
+
+option_lexers = get_option('lexers', '-,ini files,markdown,restructuredtext,properties')
+option_min_len = int(get_option('min_len', '3'))
+option_case_sens = str_to_bool(get_option('case_sens', 'true'))
+option_use_acp = str_to_bool(get_option('use_acp', 'true'))
+option_all_tabs = str_to_bool(get_option('all_tabs', 'false'))
+option_prefix = get_option('prefix', 'w')
+option_description = get_option('description', '')
+
 def isword(s):
     return s.isalnum() or s=='_'
 
@@ -109,17 +119,17 @@ class Command:
 
         word1, word2 = word
 
-        if option_use_acp:
+        if option_use_acp and word1:
             acp_words = get_acp_words(word1, word2)
         else:
             acp_words = []
 
-        file_words = [w+'|'+prefix+'|'+description for w in words
+        file_words = [w+'|'+option_prefix+'|'+option_description for w in words
                      if check_word(w, word1, word2)]
 
         #print('acp_words:', acp_words)
         #print('file_words:', file_words)
-
+        words = []
         if acp_words:
             words = acp_words
 
