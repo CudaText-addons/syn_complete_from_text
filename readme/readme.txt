@@ -7,6 +7,8 @@ plugin has options:
 - minimal word len (words of smaller len won't show in list)
 - lexers list (for which to work), none-lexer specified as "-"
 - case-sensitive
+- get words from all tabs
+- use *.acp file
 
 to edit options, open plugin's source (by Addon Manager) and options are 
 at the top of __init__.py.
@@ -15,5 +17,5 @@ for plugin to work, turn off SynWrite's option "Auto-complete - Auto show words 
 (plugin does same and better).
 
 
-Author: Alexey (SynWrite)
+Author: Alexey (SynWrite) + iRamSoft (Хомутов Роман)
 License: MIT
