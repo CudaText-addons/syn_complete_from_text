@@ -5,17 +5,15 @@ eg, if you typed "ri", it may give "riddle", "rigther" etc.
 
 plugin has options: 
 - minimal word len (words of smaller len won't show in list)
-- lexers list (for which to work), none-lexer specified as "-"
-- case-sensitive
-- get words from all tabs
-- use *.acp file
+- lexers list for which to work, none-lexer specified as "-"
+- case sensitive
+- get words from all editor-tabs
+- get words from autocompletion *.acp file for current lexer
 
-to edit options, open plugin's source (by Addon Manager) and options are 
-at the top of __init__.py.
-
-for plugin to work, turn off SynWrite's option "Auto-complete - Auto show words from current file" 
-(plugin does same and better).
+to edit options ini-file, use menu item "Plugins - Complete From Text - Config". 
 
 
-Author: Alexey (SynWrite) + iRamSoft (Хомутов Роман)
+Authors:
+  Alexey T (SynWrite)
+  iRamSoft http://github.com/iRamSoft
 License: MIT
