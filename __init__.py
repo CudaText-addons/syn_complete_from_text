@@ -1,13 +1,16 @@
 import re
+import os
+import os.path
 from sw import *
-
 # '-' means none-lexer
 option_lexers = '-,ini files,markdown,restructuredtext,properties,'
 option_min_len = 3
 option_case_sens = False
+option_use_acp = True
+option_all_tabs = True
 prefix = 'w'
-  
-
+#description = ' - from file'
+description = ''
 def isword(s):
     return s.isalnum() or s=='_'
 
@@ -19,6 +22,11 @@ def is_text_with_begin(s, begin):
 
 
 def get_words_list():
+    text = ''
+    if option_all_tabs:
+        for h in ed_handles():
+            text = text + '\n' + Editor(h).get_text_all()
+    else:
     text = ed.get_text_all()
     regex = r'\w{%d,}'%option_min_len
     l = re.findall(regex, text)
@@ -43,6 +51,44 @@ def get_word(x, y):
 
     return (text1, text2)
 
+def get_main_word(w):
+    pos = w.find(' ')
+    if pos > 0:
+        pos2 = w.find(' ', pos+1)
+        if pos2 > 0:
+            return w[pos+1:pos2]
+        else:
+            return w[pos+1:len(w)]
+    else:
+        return w
+
+
+def check_word(w, word1, word2):
+    word = get_main_word(w)
+    return is_text_with_begin(word, word1) and word != word1 and word != (word1+word2)
+
+def get_type(w):
+    return w[0:w.find(' ')]
+
+def get_descr(w):
+    pos = w.find('|')
+    if pos > 0:
+        return w[pos+1:len(w)]
+    else:
+        return
+
+
+def get_words_from_acp(word1, word2):
+    sfile = os.path.join(app_exe_dir()+'\\Data\\autocomplete', ed.get_prop(PROP_LEXER_CARET, '') + '.acp')
+    if os.path.isfile(sfile):
+        with open(sfile) as f:
+            acp_lines = list(f)
+            f.close()
+        if not acp_lines: return
+        acp_words = [get_main_word(w)+'|'+get_type(w)+'|'+get_descr(w) for w in acp_lines
+                     if check_word(w, word1, word2)]
+        #print('get_words_from_acp:', acp_words)
+        return acp_words
 
 class Command:
     def on_complete(self, ed_self):
@@ -61,13 +107,24 @@ class Command:
         #print('get_word:', word) ##
         if not words: return
         if not word: return
+
         word1, word2 = word
 
-        words = [w+'|'+prefix for w in words 
-                 if is_text_with_begin(w, word1) 
-                 and w!=word1 
-                 and w!=(word1+word2)
-                 ]
+        if option_use_acp:
+            acp_words = get_words_from_acp(word1, word2)
+
+        file_words = [w+'|'+prefix+'|'+description for w in words
+                     if check_word(w, word1, word2)]
+
+        #print('acp_words:', acp_words)
+        #print('file_words:', file_words)
+
+        if acp_words:
+            words = acp_words
+
+        if file_words:
+            words.extend(file_words)
+
         #print('word:', word)
         #print('list:', words)
 
