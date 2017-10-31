@@ -3,11 +3,11 @@ import os
 import os.path
 from sw import *
 # '-' means none-lexer
-option_lexers = '-,ini files,markdown,restructuredtext,properties,'
+option_lexers = '-,ini files,markdown,restructuredtext,properties'
 option_min_len = 3
 option_case_sens = False
 option_use_acp = True
-option_all_tabs = True
+option_all_tabs = False
 prefix = 'w'
 #description = ' - from file'
 description = ''
@@ -27,7 +27,7 @@ def get_words_list():
         for h in ed_handles():
             text = text + '\n' + Editor(h).get_text_all()
     else:
-    text = ed.get_text_all()
+        text = ed.get_text_all()
     regex = r'\w{%d,}'%option_min_len
     l = re.findall(regex, text)
     if not l: return
@@ -67,25 +67,24 @@ def check_word(w, word1, word2):
     word = get_main_word(w)
     return is_text_with_begin(word, word1) and word != word1 and word != (word1+word2)
 
-def get_type(w):
+def get_acp_type(w):
     return w[0:w.find(' ')]
 
-def get_descr(w):
+def get_acp_descr(w):
     pos = w.find('|')
     if pos > 0:
         return w[pos+1:len(w)]
     else:
         return
 
-
-def get_words_from_acp(word1, word2):
-    sfile = os.path.join(app_exe_dir()+'\\Data\\autocomplete', ed.get_prop(PROP_LEXER_CARET, '') + '.acp')
+def get_acp_words(word1, word2):
+    sfile = os.path.join(app_exe_dir(), 'Data', 'autocomplete', ed.get_prop(PROP_LEXER_CARET, '') + '.acp')
     if os.path.isfile(sfile):
         with open(sfile) as f:
             acp_lines = list(f)
             f.close()
         if not acp_lines: return
-        acp_words = [get_main_word(w)+'|'+get_type(w)+'|'+get_descr(w) for w in acp_lines
+        acp_words = [get_main_word(w)+'|'+get_acp_type(w)+'|'+get_acp_descr(w) for w in acp_lines
                      if check_word(w, word1, word2)]
         #print('get_words_from_acp:', acp_words)
         return acp_words
@@ -111,7 +110,9 @@ class Command:
         word1, word2 = word
 
         if option_use_acp:
-            acp_words = get_words_from_acp(word1, word2)
+            acp_words = get_acp_words(word1, word2)
+        else:
+            acp_words = []
 
         file_words = [w+'|'+prefix+'|'+description for w in words
                      if check_word(w, word1, word2)]
