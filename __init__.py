@@ -104,6 +104,12 @@ def get_acp_words(word1, word2):
         return acp_words
 
 class Command:
+    def config(self):
+        if os.path.isfile(ini):
+            file_open(ini)
+        else:
+            print('Config file not created yet')
+
     def on_complete(self, ed_self):
         carets = ed.get_carets()
         if carets: return

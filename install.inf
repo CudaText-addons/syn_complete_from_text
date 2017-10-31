@@ -8,3 +8,8 @@ subdir=syn_complete_from_text
 section=Events
 id=CompleteFromText
 params=on_complete
+
+[ini2]
+section=Commands
+id=Complete From Text\Config
+params=config
