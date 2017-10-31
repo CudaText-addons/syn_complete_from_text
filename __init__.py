@@ -1,9 +1,13 @@
-import re
 import os
-import os.path
+import re
+import shutil
 from sw import *
 
-options = os.path.join(os.path.dirname(__file__), 'options.ini')
+ini = os.path.join(app_ini_dir(), 'syn_complete_from_text.ini')
+ini0 = os.path.join(os.path.dirname(__file__), 'options.sample.ini')
+if os.path.isfile(ini0) and not os.path.isfile(ini):
+    shutil.copyfile(ini0, ini)
+options = ini
 
 def get_option(option, default):
     sresult = ini_read(options, 'main', option, default)

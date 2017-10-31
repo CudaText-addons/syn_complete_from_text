@@ -1,10 +1,10 @@
-2017.10.31
-- fix all words in result
-+ options moved to *.ini
+2017.11.01
++ options moved to *.ini file
+- fixes
 
 2017.10.31
-+ get words from all tabs
-+ use *.acp files
++ get words from all editor tabs, by option
++ get words from autocomplete *.acp files, by option
 
 2017.05.05
 - fix: not worked on words with "_"
