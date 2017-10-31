@@ -1,4 +1,8 @@
 2017.10.31
+- fix all words in result
++ options moved to *.ini
+
+2017.10.31
 + get words from all tabs
 + use *.acp files
 
